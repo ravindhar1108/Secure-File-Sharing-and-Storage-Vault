@@ -1,6 +1,7 @@
 package com.example.Vault.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -20,7 +21,11 @@ public class LocalStorageService implements StorageService{
 //            dir.mkdirs();
 //        }
 
-        String uniqueName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if(fileName.contains("..")) {
+            throw new SecurityException("Cannot store file with relative path outside current directory " + fileName);
+        }
+        String uniqueName = UUID.randomUUID() + "_" + fileName;
 
         File dest = new File(STORAGE_DIR + uniqueName);
 
