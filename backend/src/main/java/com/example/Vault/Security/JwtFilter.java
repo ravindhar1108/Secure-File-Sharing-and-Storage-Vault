@@ -30,11 +30,16 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpRequest, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String header = httpRequest.getHeader("Authorization");
+        String tokenParam = httpRequest.getParameter("token");
+        String token = null;
 
-        if(header!=null && header.startsWith("Bearer "))
-        {
-            String token = header.substring(7);
+        if (header != null && header.startsWith("Bearer ")) {
+            token = header.substring(7);
+        } else if (tokenParam != null && !tokenParam.isEmpty()) {
+            token = tokenParam;
+        }
 
+        if (token != null) {
             try {
                 String email = jwtUtil.extractEmail(token);
                 User user = userRepository.findByEmail(email).orElse(null);

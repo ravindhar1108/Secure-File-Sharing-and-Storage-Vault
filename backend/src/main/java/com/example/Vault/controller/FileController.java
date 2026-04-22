@@ -33,7 +33,7 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Resource> download(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Resource> download(@PathVariable Long id, @RequestParam(required = false, defaultValue = "download") String action) throws Exception {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         FileEntity file = fileService.getFile(id);
@@ -47,9 +47,16 @@ public class FileController {
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(diskFile));
 
+        String contentType = java.nio.file.Files.probeContentType(diskFile.toPath());
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        String dispositionType = "view".equals(action) ? "inline" : "attachment";
 
         return ResponseEntity.ok()
-                .header("Content-Disposition","attachment; filename=" + file.getOriginalName())
+                .header("Content-Disposition", dispositionType + "; filename=\"" + file.getOriginalName() + "\"")
+                .header("Content-Type", contentType)
                 .contentLength(file.getSize())
                 .body(resource);
     }

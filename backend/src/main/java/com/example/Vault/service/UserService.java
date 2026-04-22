@@ -20,7 +20,7 @@ public class UserService {
     {
         if(userRepository.existsUserByEmail(email))
         {
-            return "User already exists";
+            throw new RuntimeException("User already exists");
         }
         User user = new User();
         user.setEmail(email);

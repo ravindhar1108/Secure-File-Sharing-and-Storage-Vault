@@ -39,21 +39,45 @@ public class ShareController {
         return "http://localhost:8080/share/" + link.getToken();
     }
 
+    @PostMapping("/{token}/validate")
+    public ResponseEntity<java.util.Map<String, Object>> validateToken(@PathVariable String token, @RequestBody(required = false) java.util.Map<String, String> body) {
+        String password = body != null ? body.get("password") : null;
+        ShareLink link = shareService.validate(token, password);
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("valid", true);
+        response.put("viewOnce", link.isViewOnce());
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{token}")
-    public ResponseEntity<Resource> download(@PathVariable String token, @RequestParam(required = false) String password)
+    public ResponseEntity<Resource> download(@PathVariable String token, @RequestParam(required = false) String password, @RequestParam(required = false, defaultValue = "download") String action) throws java.io.IOException
     {
         ShareLink link = shareService.validate(token, password);
+
+        if (link.isViewOnce() && "download".equals(action)) {
+            // Force it to be view-only
+            action = "view";
+        }
 
         FileEntity file = fileService.getFile(link.getFileId());
 
         File diskFile = new File(file.getStoragePath());
 
-        InputStreamResource resource = new InputStreamResource(new FileSystemResource(diskFile));
+        InputStreamResource resource = new InputStreamResource(new java.io.FileInputStream(diskFile));
 
         shareService.incrementDownload(link);
 
+        String contentType = java.nio.file.Files.probeContentType(diskFile.toPath());
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        String dispositionType = "view".equals(action) ? "inline" : "attachment";
+
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename="+ file.getOriginalName())
+                .header("Content-Disposition", dispositionType + "; filename=\"" + file.getOriginalName() + "\"")
+                .header("Content-Type", contentType)
+                .contentLength(file.getSize())
                 .body(resource);
     }
 

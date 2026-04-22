@@ -22,9 +22,14 @@ public class AuthController {
     JwtUtil jwtUtil;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequest signupRequest)
+    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest)
     {
-        return userService.createUser(signupRequest.getEmail(),signupRequest.getPassword());
+        try {
+            String msg = userService.createUser(signupRequest.getEmail(),signupRequest.getPassword());
+            return ResponseEntity.ok(msg);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")

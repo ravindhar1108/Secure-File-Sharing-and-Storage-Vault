@@ -39,7 +39,11 @@ public class ShareService {
         shareLink.setViewOnce(shareRequest.isViewOnce());
         shareLink.setMaxDownloads(maxDownloads);
         shareLink.setExpiryTime(LocalDateTime.now().plusHours(hours));
-        shareLink.setPassword(encoder.encode(shareRequest.getPassword()));
+        if (shareRequest.getPassword() != null && !shareRequest.getPassword().isEmpty()) {
+            shareLink.setPassword(encoder.encode(shareRequest.getPassword()));
+        } else {
+            shareLink.setPassword(null);
+        }
 
         return shareLinkRepository.save(shareLink);
     }
@@ -55,7 +59,7 @@ public class ShareService {
             {
                 throw new RuntimeException("Password Required");
             }
-            if(!encoder.matches(link.getPassword(), password))
+            if(!encoder.matches(password, link.getPassword()))
             {
                 throw new RuntimeException("Invalid Password");
             }
