@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
-import { Folder, File as FileIcon, UploadCloud, FolderPlus, Download, Trash2, ArrowLeft, History, Share2, ExternalLink } from 'lucide-react';
+import { Folder, File as FileIcon, UploadCloud, FolderPlus, Download, Trash2, ArrowLeft, History, Share2, ExternalLink, FolderOpen } from 'lucide-react';
 import ShareModal from './ShareModal';
 import VersionsModal from './VersionsModal';
 
@@ -26,8 +26,8 @@ export default function FileBrowser() {
         folderId ? api.get(`/folders/${folderId}/subfolders`) : api.get('/folders'),
         api.get(`/files${folderId ? `?folderId=${folderId}` : ''}`)
       ]);
-      setFolders(foldersRes.data);
-      setFiles(filesRes.data);
+      setFolders(Array.isArray(foldersRes.data) ? foldersRes.data : []);
+      setFiles(Array.isArray(filesRes.data) ? filesRes.data : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -116,22 +116,22 @@ export default function FileBrowser() {
          onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
          onDrop={onDrop}>
       
-      <div className="flex justify-between items-center" style={{ marginBottom: '24px' }}>
+      <div className="flex justify-between items-center" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {folderId && (
-            <button onClick={() => navigate(-1)} className="btn btn-outline" style={{ padding: '8px', border: 'none' }}>
-                <ArrowLeft size={20} />
+            <button onClick={() => navigate(-1)} className="btn" style={{ padding: '8px', background: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', boxShadow: 'var(--shadow-sm)' }}>
+                <ArrowLeft size={20} style={{ color: 'var(--text-secondary)' }} />
             </button>
             )}
-            <h1 style={{ fontSize: '24px', fontWeight: '400', color: 'var(--text-primary)' }}>{folderId ? 'Inside Folder' : 'My Drive'}</h1>
+            <h1 style={{ fontSize: '28px', fontWeight: '600', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>{folderId ? 'Folder Contents' : 'My Drive'}</h1>
         </div>
         
-        <div className="flex gap-2">
-          <button onClick={handleCreateFolder} className="btn btn-outline" style={{ borderRadius: '20px' }}>
+        <div className="flex gap-4">
+          <button onClick={handleCreateFolder} className="btn btn-outline" style={{ borderRadius: 'var(--radius-sm)' }}>
             <FolderPlus size={18} /> New folder
           </button>
-          <button onClick={() => fileInputRef.current.click()} className="btn btn-outline" style={{ borderRadius: '20px' }}>
-            <UploadCloud size={18} /> File upload
+          <button onClick={() => fileInputRef.current.click()} className="btn btn-primary" style={{ borderRadius: 'var(--radius-sm)' }}>
+            <UploadCloud size={18} /> Upload files
           </button>
           <input 
             type="file" 
@@ -145,9 +145,9 @@ export default function FileBrowser() {
 
       {isDragging && (
         <div className="surface animate-fade-in" style={{ 
-            height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            border: '2px dashed var(--accent-color)', background: 'rgba(59, 130, 246, 0.05)', marginBottom: '24px', color: 'var(--accent-color)', fontWeight: '500' }}>
-            <UploadCloud size={32} style={{ marginBottom: '8px' }}/>
+            height: '140px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            border: '2px dashed var(--accent-color)', background: 'var(--accent-bg)', marginBottom: '32px', color: 'var(--accent-color)', fontWeight: '500', borderRadius: 'var(--radius-lg)' }}>
+            <UploadCloud size={40} style={{ marginBottom: '12px', opacity: 0.8 }}/>
             Drop your files here to upload to this directory
         </div>
       )}
@@ -155,14 +155,14 @@ export default function FileBrowser() {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <div className="surface" style={{ overflow: 'hidden' }}>
+        <div className="surface" style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-                <th style={{ padding: '12px 24px', fontWeight: '500' }}>Name</th>
-                <th style={{ padding: '12px 24px', fontWeight: '500' }}>Size</th>
-                <th style={{ padding: '12px 24px', fontWeight: '500' }}>Last modified</th>
-                <th style={{ padding: '12px 24px', fontWeight: '500', textAlign: 'right' }}></th>
+              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', background: '#fafafa' }}>
+                <th style={{ padding: '16px 24px', fontWeight: '500' }}>Name</th>
+                <th style={{ padding: '16px 24px', fontWeight: '500' }}>Size</th>
+                <th style={{ padding: '16px 24px', fontWeight: '500' }}>Last modified</th>
+                <th style={{ padding: '16px 24px', fontWeight: '500', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -208,9 +208,12 @@ export default function FileBrowser() {
 
               {folders.length === 0 && files.length === 0 && (
                 <tr>
-                   <td colSpan={4} style={{ padding: '48px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                       <FolderOpen size={48} style={{ opacity: 0.2, margin: '0 auto 12px' }} />
-                       <p>This folder is empty.</p>
+                   <td colSpan={4} style={{ padding: '64px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                       <div style={{ width: '80px', height: '80px', background: 'var(--bg-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                         <FolderOpen size={40} style={{ color: 'var(--text-tertiary)', opacity: 0.5 }} />
+                       </div>
+                       <p style={{ fontSize: '16px', fontWeight: '500', color: 'var(--text-secondary)' }}>This folder is empty</p>
+                       <p style={{ marginTop: '8px', fontSize: '14px' }}>Upload files or create a new folder to get started.</p>
                    </td>
                 </tr>
               )}

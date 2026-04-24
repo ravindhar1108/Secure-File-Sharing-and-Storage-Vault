@@ -46,10 +46,16 @@ public class FileService {
         FileEntity existingByHash = fileRepository.findFirstByFileHash(fileHash);
         if (existingByHash != null) {
             storagePath = existingByHash.getStoragePath();
+            if (!storageService.exists(storagePath)) {
+                storagePath = storageService.upload(file);
+            }
         } else {
             FileVersionEntity existingVersionByHash = fileVersionRepository.findFirstByFileHash(fileHash);
             if (existingVersionByHash != null) {
                 storagePath = existingVersionByHash.getStoragePath();
+                if (!storageService.exists(storagePath)) {
+                    storagePath = storageService.upload(file);
+                }
             } else {
                 // If not found in DB, upload to disk
                 storagePath = storageService.upload(file);
@@ -139,8 +145,11 @@ public class FileService {
 
         // Only delete from disk if no other file references it (Deduplication cleanup)
         if (fileHash != null && !fileRepository.existsByFileHash(fileHash) && !fileVersionRepository.existsByFileHash(fileHash)) {
-            File diskFile = new File(path);
-            if (diskFile.exists()) diskFile.delete();
+            try {
+                storageService.delete(path);
+            } catch (Exception e) {
+                System.err.println("Failed to delete file from storage: " + e.getMessage());
+            }
         }
     }
 

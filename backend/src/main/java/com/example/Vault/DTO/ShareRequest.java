@@ -9,5 +9,6 @@ public class ShareRequest {
     private Integer expiryHours;
     private boolean viewOnce;
     private String password;
+    private String shareType;
 
 }

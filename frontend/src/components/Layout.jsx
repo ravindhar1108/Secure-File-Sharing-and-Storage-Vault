@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
-import { HardDrive, Trash2, FolderOpen, LogOut, Settings } from 'lucide-react';
+import { HardDrive, Trash2, FolderOpen, LogOut, Settings, Link2 } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -10,16 +10,16 @@ export default function Layout() {
     const isActive = location.pathname === to || location.pathname.startsWith(`${to}/`);
     return (
       <Link to={to} style={{
-        display: 'flex', alignItems: 'center', gap: '16px', padding: '10px 24px',
-        borderRadius: '0 24px 24px 0', 
-        color: isActive ? 'var(--primary-color)' : 'var(--text-primary)',
-        background: isActive ? '#e8f0fe' : 'transparent',
-        fontWeight: isActive ? '500' : '400',
-        transition: 'all 0.1s ease',
+        display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px',
+        borderRadius: 'var(--radius-sm)', 
+        color: isActive ? 'var(--accent-color)' : 'var(--text-secondary)',
+        background: isActive ? 'var(--accent-bg)' : 'transparent',
+        fontWeight: '500',
+        transition: 'all 0.2s ease',
         textDecoration: 'none',
-        marginRight: '16px'
+        margin: '0 16px'
       }}>
-        <Icon size={20} style={{ color: isActive ? 'var(--primary-color)' : 'var(--text-secondary)' }} />
+        <Icon size={20} style={{ color: isActive ? 'var(--accent-color)' : 'var(--text-tertiary)' }} />
         {label}
       </Link>
     );
@@ -28,37 +28,40 @@ export default function Layout() {
   return (
     <div style={{ display: 'flex', height: '100vh', background: 'var(--bg-color)' }}>
       {/* Sidebar */}
-      <aside style={{ width: '256px', background: 'var(--bg-color)', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ height: '40px', width: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)' }}>
-            <HardDrive size={32} />
+      <aside style={{ width: '260px', background: 'var(--surface-color)', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
+        <div style={{ padding: '24px 32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ height: '40px', width: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)', background: 'var(--bg-color)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+            <HardDrive size={24} />
           </div>
-          <span style={{ fontWeight: '500', fontSize: '22px', color: 'var(--text-secondary)' }}>Drive</span>
+          <span style={{ fontWeight: '600', fontSize: '20px', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>Vault</span>
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '8px' }}>
           <NavItem to="/" icon={FolderOpen} label="My Files" />
+          <NavItem to="/active-links" icon={Link2} label="Active Links" />
           <NavItem to="/trash" icon={Trash2} label="Trash Bin" />
         </nav>
 
-        <div style={{ padding: '20px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div style={{ height: '32px', width: '32px', borderRadius: '50%', background: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '500', color: 'white'}}>
+        <div style={{ padding: '24px', borderTop: '1px solid var(--border-color)', marginTop: 'auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ height: '36px', width: '36px', borderRadius: '50%', background: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '500', color: 'white', flexShrink: 0 }}>
               {user?.email?.[0].toUpperCase()}
             </div>
-            <div style={{ fontSize: '14px', fontWeight: '500', textOverflow: 'ellipsis', overflow: 'hidden' }}>{user?.email}</div>
+            <div style={{ fontSize: '14px', fontWeight: '500', textOverflow: 'ellipsis', overflow: 'hidden', color: 'var(--text-primary)' }}>{user?.email}</div>
           </div>
-          <button onClick={logout} className="btn" style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--text-tertiary)', padding: '8px 0' }}>
+          <button onClick={logout} className="btn btn-outline" style={{ width: '100%', justifyContent: 'center', color: 'var(--text-secondary)' }}>
             <LogOut size={16} /> Sign out
           </button>
         </div>
       </aside>
 
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 16px 16px 0' }}>
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         
         {/* Main Content Area */}
-        <div className="surface" style={{ flex: 1, overflowY: 'auto', padding: '32px', borderRadius: '16px' }}>
-          <Outlet />
+        <div className="animate-fade-in" style={{ flex: 1, overflowY: 'auto', padding: '40px 48px' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

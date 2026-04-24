@@ -1,37 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Extremely Minimal, Professional Google-like Theme */
-  --bg-color: #f8f9fa;
+  /* Premium Minimalist Theme */
+  --bg-color: #f3f4f6; /* Soft gray for better contrast with white cards */
   --surface-color: #ffffff;
   
-  --text-primary: #202124;
-  --text-secondary: #5f6368;
-  --text-tertiary: #80868b;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
   
-  --border-color: #dadce0;
+  --border-color: #e5e7eb;
+  --border-hover: #d1d5db;
   
-  --primary-color: #0b57d0;      /* Google Drive primary blue */
-  --primary-hover: #084298;
+  --primary-color: #0f172a;      /* Deep slate/indigo for a premium look instead of basic blue */
+  --primary-hover: #1e293b;
   
-  --accent-color: #1a73e8;       /* Subtle interactions */
-  --accent-hover: #1967d2;
+  --accent-color: #2563eb;       /* Professional blue for highlights */
+  --accent-hover: #1d4ed8;
+  --accent-bg: #eff6ff;
   
-  --danger-color: #d93025;
-  --danger-bg: #fce8e6;
+  --danger-color: #dc2626;
+  --danger-bg: #fef2f2;
 
-  --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  /* Refined, buttery shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
   
-  --radius: 8px; /* Softer radius typical of modern Google components */
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 16px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
@@ -39,15 +45,19 @@ body {
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  /* Very subtle premium mesh pattern effect */
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 a {
   color: var(--accent-color);
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--accent-hover);
 }
 
 button {
@@ -64,61 +74,79 @@ button {
   justify-content: center;
   gap: 8px;
   padding: 8px 16px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font-weight: 500;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn-primary {
   background-color: var(--primary-color);
   color: white;
-  border-radius: 20px; /* Pill shape for primary actions like Google */
+  border-radius: var(--radius-sm);
   padding: 10px 24px;
+  box-shadow: var(--shadow-sm);
 }
+
 .btn-primary:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-outline {
   border: 1px solid var(--border-color);
   background: var(--surface-color);
-  color: var(--primary-color);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
 }
+
 .btn-outline:hover {
-  background: #f8f9fa;
+  background: #f9fafb;
+  color: var(--text-primary);
+  border-color: var(--border-hover);
 }
 
 .btn-danger {
   background-color: var(--danger-color);
   color: white;
 }
+
 .btn-danger:hover {
-  background-color: #dc2626;
+  background-color: #b91c1c;
 }
 
 .input-field {
   width: 100%;
-  padding: 10px 14px;
+  padding: 12px 16px;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   background-color: var(--surface-color);
   color: var(--text-primary);
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 }
+
 .input-field:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.input-field::placeholder {
+  color: var(--text-tertiary);
 }
 
 /* Layout Utilities */
 .surface {
   background: var(--surface-color);
   border-radius: var(--radius);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .flex { display: flex; }
@@ -130,12 +158,12 @@ button {
 
 /* Micro-animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes slideIn {
@@ -144,7 +172,7 @@ button {
 }
 
 .slide-enter {
-  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Material Spinner */

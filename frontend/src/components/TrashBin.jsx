@@ -44,9 +44,9 @@ export default function TrashBin() {
 
   return (
     <div>
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: '600', color: 'var(--text-primary)' }}>Trash Bin</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '4px' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: '600', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>Trash Bin</h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginTop: '6px' }}>
             Files here will be permanently deleted after 30 days.
         </p>
       </div>
@@ -54,10 +54,10 @@ export default function TrashBin() {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <div className="surface" style={{ overflow: 'hidden' }}>
+        <div className="surface" style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', background: '#fafafa' }}>
                 <th style={{ padding: '16px 24px', fontWeight: '500' }}>Name</th>
                 <th style={{ padding: '16px 24px', fontWeight: '500' }}>Size</th>
                 <th style={{ padding: '16px 24px', fontWeight: '500' }}>Deleted On</th>
@@ -90,9 +90,11 @@ export default function TrashBin() {
               
               {files.length === 0 && (
                 <tr>
-                   <td colSpan={4} style={{ padding: '48px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                       <Trash2 size={48} style={{ opacity: 0.2, margin: '0 auto 12px' }} />
-                       <p>Trash is empty.</p>
+                   <td colSpan={4} style={{ padding: '64px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                       <div style={{ width: '80px', height: '80px', background: 'var(--bg-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                         <Trash2 size={40} style={{ color: 'var(--text-tertiary)', opacity: 0.5 }} />
+                       </div>
+                       <p style={{ fontSize: '16px', fontWeight: '500', color: 'var(--text-secondary)' }}>Trash is empty</p>
                    </td>
                 </tr>
               )}

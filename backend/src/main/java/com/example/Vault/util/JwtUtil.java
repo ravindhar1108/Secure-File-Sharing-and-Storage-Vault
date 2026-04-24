@@ -3,6 +3,7 @@ package com.example.Vault.util;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,9 +13,15 @@ import java.util.Date;
 @Service
 public class JwtUtil {
 
-    private final String SECRET = "VaultAppVaultAppVaultAppVaultAppVaultApp";
+    @Value("${jwt.secret}")
+    private String SECRET;
 
-    SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private SecretKey key;
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    }
 
 
     public String generateToken(String email)

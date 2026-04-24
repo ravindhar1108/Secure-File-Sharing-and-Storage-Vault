@@ -1,30 +1,19 @@
-package com.example.Vault.model;
+package com.example.Vault.DTO;
 
-import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "share_links")
 @Data
-public class ShareLink {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class ActiveLinkDTO {
     private String token;
     private Long fileId;
-    private Long userId;
+    private String fileName;
     private LocalDateTime expiryTime;
     private Integer maxDownloads;
     private Integer downloadCount;
     private Integer viewCount;
-    private String password;
     private boolean viewOnce;
     private boolean active;
     private String shareType;
     private LocalDateTime createdAt;
-
 }

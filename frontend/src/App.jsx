@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import FileBrowser from './components/FileBrowser';
 import TrashBin from './components/TrashBin';
 import SharedFileAccess from './components/SharedFileAccess';
+import ActiveLinks from './components/ActiveLinks';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -25,6 +26,7 @@ function App() {
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<FileBrowser />} />
         <Route path="folder/:folderId" element={<FileBrowser />} />
+        <Route path="active-links" element={<ActiveLinks />} />
         <Route path="trash" element={<TrashBin />} />
       </Route>
     </Routes>

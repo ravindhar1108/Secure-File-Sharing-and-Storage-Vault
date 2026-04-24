@@ -53,19 +53,20 @@ export default function Login({ mode = 'login' }) {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-color)' }}>
-      <div className="animate-fade-in" style={{ padding: '48px 40px 36px', width: '100%', maxWidth: '448px', border: '1px solid #dadce0', borderRadius: '8px' }}>
+    <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
+      <div className="surface animate-fade-in" style={{ padding: '48px 40px 36px', width: '100%', maxWidth: '448px', margin: '0 16px', boxShadow: 'var(--shadow-elevated)', borderRadius: 'var(--radius-lg)' }}>
         
         <div key={isRegistering ? 'register' : 'login'} className="slide-enter">
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ 
-            height: '48px', width: '48px',
-            margin: '0 auto 16px', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center'
+            height: '56px', width: '56px',
+            margin: '0 auto 24px', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--bg-color)', borderRadius: '14px', border: '1px solid var(--border-color)'
           }}>
-            <KeyRound size={40} strokeWidth={1.5} />
+            <KeyRound size={28} strokeWidth={2} />
           </div>
-          <h1 style={{ fontSize: '24px', fontWeight: '400', color: 'var(--text-primary)' }}>Vault</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '16px', marginTop: '8px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: '600', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>Vault</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginTop: '8px' }}>
             {isRegistering ? 'Create your account' : 'Sign in'}
           </p>
         </div>
@@ -85,12 +86,12 @@ export default function Login({ mode = 'login' }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
             <div style={{ position: 'relative' }}>
-              <Mail size={20} style={{ position: 'absolute', left: '12px', top: '11px', color: 'var(--text-tertiary)' }} strokeWidth={1.5}/>
+              <Mail size={18} style={{ position: 'absolute', left: '14px', top: '13px', color: 'var(--text-tertiary)' }} strokeWidth={2}/>
               <input 
                 type="email" 
                 className="input-field" 
                 placeholder="Email or phone" 
-                style={{ paddingLeft: '40px', padding: '12px 12px 12px 40px' }}
+                style={{ paddingLeft: '44px' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -98,11 +99,10 @@ export default function Login({ mode = 'login' }) {
             </div>
           </div>
           <div>
-            <input 
+              <input 
                 type="password" 
                 className="input-field" 
                 placeholder="Enter your password" 
-                style={{ padding: '12px' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -110,11 +110,10 @@ export default function Login({ mode = 'login' }) {
           </div>
           {isRegistering && (
           <div className="slide-enter">
-            <input 
+              <input 
                 type="password" 
                 className="input-field" 
                 placeholder="Confirm your password" 
-                style={{ padding: '12px' }}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required

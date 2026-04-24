@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ShareLinkRepository extends JpaRepository<ShareLink, Long> {
 
     Optional<ShareLink> findByToken(String token);
+    java.util.List<ShareLink> findByUserId(Long userId);
 }

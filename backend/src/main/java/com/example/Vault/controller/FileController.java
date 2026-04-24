@@ -5,15 +5,14 @@ import com.example.Vault.model.FileVersionEntity;
 import com.example.Vault.model.User;
 import com.example.Vault.service.FileService;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.net.URLConnection;
 import java.util.List;
 
 @RestController
@@ -43,11 +42,15 @@ public class FileController {
             throw new RuntimeException("Unauthorized");
         }
 
-        File diskFile = new File(file.getStoragePath());
+        byte[] data;
+        try {
+            data = fileService.download(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.NOT_FOUND).build();
+        }
+        ByteArrayResource resource = new ByteArrayResource(data);
 
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(diskFile));
-
-        String contentType = java.nio.file.Files.probeContentType(diskFile.toPath());
+        String contentType = URLConnection.guessContentTypeFromName(file.getOriginalName());
         if (contentType == null) {
             contentType = "application/octet-stream";
         }
@@ -66,7 +69,12 @@ public class FileController {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
-        byte[] data = fileService.downloadVersion(versionId);
+        byte[] data;
+        try {
+            data = fileService.downloadVersion(versionId);
+        } catch (Exception e) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.NOT_FOUND).build();
+        }
 
         return ResponseEntity.ok()
                 .header("Content-Disposition","attachment; filename=version_" + versionId)
