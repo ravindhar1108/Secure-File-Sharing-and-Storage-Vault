@@ -45,7 +45,15 @@ public class AwsS3StorageService implements StorageService {
                 .contentType(file.getContentType())
                 .build();
 
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+        try {
+            System.out.println("Uploading to S3 bucket: " + bucketName + " with key: " + uniqueKey);
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+            System.out.println("Successfully uploaded to S3.");
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR: Failed to upload to S3: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
 
         return uniqueKey;
     }

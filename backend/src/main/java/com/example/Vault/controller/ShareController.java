@@ -22,6 +22,9 @@ public class ShareController {
     private final ShareService shareService;
     private final FileService fileService;
 
+    @org.springframework.beans.factory.annotation.Value("${app.share.base-url:http://localhost:8080}")
+    private String shareBaseUrl;
+
     public ShareController(ShareService shareService, FileService fileService) {
         this.shareService = shareService;
         this.fileService = fileService;
@@ -36,7 +39,7 @@ public class ShareController {
             throw new RuntimeException("Unauthorized");
         }
         ShareLink link =  shareService.createShare(id, user.getId(), shareRequest);
-        return "http://localhost:8080/share/" + link.getToken();
+        return shareBaseUrl + "/share/" + link.getToken();
     }
 
     @GetMapping("/active")

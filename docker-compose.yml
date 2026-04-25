@@ -1,39 +1,43 @@
-version: "3.8"
-
 services:
-
-  postgres:
-    image: postgres:15
-    container_name: postgres_db
-    restart: always
+  db:
+    image: postgres:15-alpine
+    container_name: vault-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Logic@6426
       POSTGRES_DB: VaultDB
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
     build: ./backend
-    container_name: spring_boot_app
+    container_name: vault-backend
     depends_on:
-      - postgres
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - JWT_SECRET=${JWT_SECRET}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - APP_SHARE_BASE_URL=${APP_SHARE_BASE_URL:-http://localhost}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost,http://127.0.0.1,http://localhost:5173,http://localhost:5174}
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/VaultDB
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: Logic@6426
 
   frontend:
-    build: ./frontend
-    container_name: react_app
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8080}
+    container_name: vault-frontend
+    ports:
+      - "80:80"
     depends_on:
       - backend
-    ports:
-      - "3000:80"
 
 volumes:
   postgres_data:

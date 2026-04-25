@@ -47,7 +47,8 @@ export default function SharedFileAccess() {
   };
 
   const executeAccess = (action) => {
-    const url = `http://localhost:8080/share/${token}?action=${action}${password ? `&password=${encodeURIComponent(password)}` : ''}`;
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const url = `${apiBase}/share/${token}?action=${action}${password ? `&password=${encodeURIComponent(password)}` : ''}`;
     
     // Natively open using browser routing. 
     // This perfectly supports gigantic files (GBs) and native inline previewing!

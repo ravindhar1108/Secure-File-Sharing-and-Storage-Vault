@@ -24,9 +24,10 @@ public class FileController {
 
     @PostMapping("/upload")
     public FileEntity upload(@RequestParam("file") MultipartFile file, @RequestParam(required = false) Long folderId) throws Exception {
-
+        System.out.println("Received upload request for file: " + file.getOriginalFilename());
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = user.getId();
+        System.out.println("Uploading for userId: " + userId);
 
         return fileService.upload(file, userId, folderId);
     }

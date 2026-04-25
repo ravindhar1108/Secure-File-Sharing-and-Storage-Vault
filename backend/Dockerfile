@@ -1,11 +1,21 @@
-# Use Java image
-FROM eclipse-temurin:17-jdk-jammy
-
-# Set working directory
+# Build stage
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy jar file
-COPY target/*.jar app.jar
+# Copy everything (including mvnw + .mvn)
+COPY . .
 
-# Run the app
+# Give permission to mvnw
+RUN chmod +x mvnw
+
+# Build using Maven Wrapper
+RUN ./mvnw clean package -DskipTests
+
+# Run stage
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

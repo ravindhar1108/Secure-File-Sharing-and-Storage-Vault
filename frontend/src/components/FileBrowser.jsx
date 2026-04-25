@@ -74,8 +74,9 @@ export default function FileBrowser() {
   };
 
   const handleDownload = async (file) => {
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
     const token = localStorage.getItem('token');
-    const url = `http://localhost:8080/files/${file.id}?token=${token}`;
+    const url = `${apiBase}/files/${file.id}?token=${token}`;
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', file.originalName);
@@ -85,8 +86,9 @@ export default function FileBrowser() {
   };
 
   const handleOpenPreview = async (file) => {
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
     const token = localStorage.getItem('token');
-    const url = `http://localhost:8080/files/${file.id}?token=${token}&action=view`;
+    const url = `${apiBase}/files/${file.id}?token=${token}&action=view`;
     window.open(url, '_blank');
   };
 
